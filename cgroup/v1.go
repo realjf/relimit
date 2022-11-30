@@ -17,11 +17,22 @@ type cgroupImplV1 struct {
 	cg      cgroups.Cgroup
 	name    string
 	version CgroupVersion
+	res     *specs.LinuxResources
 }
 
 func NewCgroupImplV1() *cgroupImplV1 {
 	return &cgroupImplV1{
 		version: V1,
+		res: &specs.LinuxResources{
+			CPU:            &specs.LinuxCPU{},
+			Memory:         &specs.LinuxMemory{},
+			BlockIO:        &specs.LinuxBlockIO{},
+			Network:        &specs.LinuxNetwork{},
+			Pids:           &specs.LinuxPids{},
+			Devices:        make([]specs.LinuxDeviceCgroup, 0),
+			Rdma:           make(map[string]specs.LinuxRdma),
+			HugepageLimits: make([]specs.LinuxHugepageLimit, 0),
+		},
 	}
 }
 
@@ -59,15 +70,10 @@ func (c *cgroupImplV1) Create() error {
 		return errors.New("name is empty")
 	}
 	var err error
-	c.cg, err = cgroups.New(cgroups.V1, cgroups.StaticPath(fmt.Sprintf("/%s", c.name)), &specs.LinuxResources{
-		CPU:            &specs.LinuxCPU{},
-		Memory:         &specs.LinuxMemory{},
-		BlockIO:        &specs.LinuxBlockIO{},
-		Network:        &specs.LinuxNetwork{},
-		Pids:           &specs.LinuxPids{},
-		Devices:        make([]specs.LinuxDeviceCgroup, 0),
-		Rdma:           make(map[string]specs.LinuxRdma),
-		HugepageLimits: make([]specs.LinuxHugepageLimit, 0),
-	})
+	c.cg, err = cgroups.New(cgroups.V1, cgroups.StaticPath(fmt.Sprintf("/%s", c.name)), c.res)
 	return err
+}
+
+func (c *cgroupImplV1) LimitPid(pid int) error {
+	return c.cg.Add(cgroups.Process{Pid: pid})
 }

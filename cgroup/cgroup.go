@@ -11,6 +11,7 @@ type ICgroup interface {
 	Instance() any
 	Close() error
 	Load() error
+	LimitPid(pid int) error
 }
 
 type cgroupImpl struct {
@@ -59,4 +60,8 @@ func (c *cgroupImpl) Close() error {
 
 func (c *cgroupImpl) Load() error {
 	return c.cg.Load()
+}
+
+func (c *cgroupImpl) LimitPid(pid int) error {
+	return c.cg.LimitPid(pid)
 }

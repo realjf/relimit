@@ -2,6 +2,19 @@ package cgroup
 
 import "errors"
 
+// Percent is a percentage value. It is used to specify CPU rate limits.
+type Percent uint
+
+// Memory represents a number of bytes
+type Memory uint
+
+const (
+	Byte     Memory = 1
+	Kilobyte        = 1024 * Byte
+	Megabyte        = 1024 * Kilobyte
+	Gigabyte        = 1024 * Megabyte
+)
+
 type CgroupVersion string
 
 const (
