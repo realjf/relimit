@@ -16,6 +16,8 @@ type IReLimit interface {
 	GetCmd() *utils.Command
 	GetCgroup() cgroup.ICgroup
 	StartByPid(pid int) error
+	SetUsername(username string) error
+	SetUser(user *user.User) IReLimit
 }
 
 type relimit struct {
@@ -135,13 +137,21 @@ func (r *relimit) StartByPid(pid int) error {
 	return nil
 }
 
-func (r *relimit) Start(cmdl string, args ...string) (output []byte, err error) {
-
-	user, err := user.Current()
-	if err != nil {
-		return nil, err
-	}
+func (r *relimit) SetUser(user *user.User) IReLimit {
 	r.cmd.SetUser(user)
+	return r
+}
+
+func (r *relimit) SetUsername(username string) error {
+	User, err := user.Lookup(username)
+	if err != nil {
+		return err
+	}
+	r.cmd.SetUser(User)
+	return nil
+}
+
+func (r *relimit) Start(cmdl string, args ...string) (output []byte, err error) {
 
 	_, err = r.cmd.Command(cmdl, args...)
 	if err != nil {
@@ -158,7 +168,10 @@ func (r *relimit) Start(cmdl string, args ...string) (output []byte, err error) 
 		}
 		return nil, err
 	}
-	fmt.Printf("start run: %s %s\n", cmdl, strings.Join(args, " "))
+	if r.debug {
+		fmt.Printf("start run: %s %s\n", cmdl, strings.Join(args, " "))
+	}
+
 	output, err = r.cmd.Run()
 	if err != nil {
 		if r.debug {
