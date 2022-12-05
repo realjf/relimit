@@ -26,6 +26,7 @@ type relimit struct {
 func NewRelimit(maxCpuUsage cgroup.Percent, maxMemoryInBytes cgroup.Memory, disableOOMKill bool) (IReLimit, error) {
 	re := &relimit{
 		debug: false,
+		cmd:   utils.NewCmd(),
 	}
 
 	var err error
@@ -58,7 +59,10 @@ func NewRelimit(maxCpuUsage cgroup.Percent, maxMemoryInBytes cgroup.Memory, disa
 }
 
 func MustNewRelimit(maxCpuUsage cgroup.Percent, maxMemoryInBytes cgroup.Memory, disableOOMKill bool) IReLimit {
-	re := &relimit{}
+	re := &relimit{
+		debug: false,
+		cmd:   utils.NewCmd(),
+	}
 
 	var err error
 	err = re.cmd.CheckRoot()
@@ -120,7 +124,6 @@ func (r *relimit) Close() {
 }
 
 func (r *relimit) Start(cmdl string, args ...string) (output []byte, err error) {
-	r.cmd = utils.NewCmd()
 
 	user, err := user.Current()
 	if err != nil {
