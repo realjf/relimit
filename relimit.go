@@ -18,6 +18,7 @@ type IReLimit interface {
 	StartByPid(pid int) error
 	SetUsername(username string) error
 	SetUser(user *user.User) IReLimit
+	SetNoSetGroups(noSetGroups bool)
 }
 
 type relimit struct {
@@ -149,6 +150,10 @@ func (r *relimit) SetUsername(username string) error {
 	}
 	r.cmd.SetUser(User)
 	return nil
+}
+
+func (r *relimit) SetNoSetGroups(noSetGroups bool) {
+	r.cmd.SetNoSetGroups(noSetGroups)
 }
 
 func (r *relimit) Start(cmdl string, args ...string) (output []byte, err error) {
