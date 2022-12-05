@@ -9,9 +9,6 @@ import (
 	"github.com/realjf/utils"
 )
 
-const DefaultGroup = "my_relimit_group.slice"
-const DefaultName = "my_relimit"
-
 type IReLimit interface {
 	Start(cmdl string, args ...string) (output []byte, err error)
 	Close()
@@ -38,9 +35,9 @@ func NewRelimit(maxCpuUsage cgroup.Percent, maxMemoryInBytes cgroup.Memory, disa
 	}
 
 	if cgroup.IsCgroupV2() {
-		re.cg, err = cgroup.NewCgroup(cgroup.V2, cgroup.WithSlice("/"), cgroup.WithGroup(DefaultGroup))
+		re.cg, err = cgroup.NewCgroup(cgroup.V2, cgroup.WithSlice("/"), cgroup.WithGroup(RandomGroup()))
 	} else {
-		re.cg, err = cgroup.NewCgroup(cgroup.V1, cgroup.WithName(DefaultName))
+		re.cg, err = cgroup.NewCgroup(cgroup.V1, cgroup.WithName(RandomName()))
 	}
 
 	if err != nil {
@@ -70,9 +67,9 @@ func MustNewRelimit(maxCpuUsage cgroup.Percent, maxMemoryInBytes cgroup.Memory, 
 	}
 
 	if cgroup.IsCgroupV2() {
-		re.cg, err = cgroup.NewCgroup(cgroup.V2, cgroup.WithSlice("/"), cgroup.WithGroup(DefaultGroup))
+		re.cg, err = cgroup.NewCgroup(cgroup.V2, cgroup.WithSlice("/"), cgroup.WithGroup(RandomGroup()))
 	} else {
-		re.cg, err = cgroup.NewCgroup(cgroup.V1, cgroup.WithName(DefaultName))
+		re.cg, err = cgroup.NewCgroup(cgroup.V1, cgroup.WithName(RandomName()))
 	}
 	if err != nil {
 		panic(err)

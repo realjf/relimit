@@ -7,7 +7,7 @@ push:
 
 
 build_test:
-	@go test -c -timeout 1000s -run ^TestRelimit$ github.com/realjf/relimit
+	@go test -c -race -timeout 1000s -run ^TestRelimit$ github.com/realjf/relimit
 
 run_test:
 	@sudo ./relimit.test
