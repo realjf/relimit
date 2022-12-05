@@ -15,7 +15,7 @@ type IReLimit interface {
 	SetDebug(debug bool)
 	GetCmd() *utils.Command
 	GetCgroup() cgroup.ICgroup
-	StartByPid() error
+	StartByPid(pid int) error
 }
 
 type relimit struct {
