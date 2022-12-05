@@ -21,3 +21,5 @@ func main() {
 }
 
 ```
+
+> Please use it as root or sudo.
