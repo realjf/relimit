@@ -15,6 +15,7 @@ type IReLimit interface {
 	SetDebug(debug bool)
 	GetCmd() *utils.Command
 	GetCgroup() cgroup.ICgroup
+	StartByPid() error
 }
 
 type relimit struct {
@@ -121,6 +122,17 @@ func (r *relimit) Close() {
 		fmt.Println("done!!!")
 	}
 
+}
+
+func (r *relimit) StartByPid(pid int) error {
+	err := r.cg.LimitPid(pid)
+	if err != nil {
+		if r.debug {
+			fmt.Println(err)
+		}
+		return err
+	}
+	return nil
 }
 
 func (r *relimit) Start(cmdl string, args ...string) (output []byte, err error) {
