@@ -4,8 +4,8 @@ go 1.19
 
 require (
 	github.com/google/uuid v1.3.0
-	github.com/realjf/cgroup v0.0.9
-	github.com/realjf/utils v0.0.27
+	github.com/realjf/cgroup v0.0.10
+	github.com/realjf/utils v0.0.28
 )
 
 require (
